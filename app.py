@@ -30,7 +30,7 @@ db = SQLAlchemy(app)  # Инициализация базы данных
 try:
     with app.app_context():
         connection = db.engine.connect()
-        connection.execute('SELECT 1')
+        connection.execute(text('SELECT 1'))
         connection.close()
     print("Successfully connected to the database.")
 except Exception as e:
