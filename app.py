@@ -5,7 +5,6 @@ from flask import Flask
 from flask_cors import CORS
 from flask_ngrok import run_with_ngrok
 from flask_migrate import Migrate
-from sqlalchemy import text
 from backend.routes import main_bp
 from backend.models import db
 
@@ -35,7 +34,6 @@ migrate = Migrate(app, db)
 try:
     with app.app_context():
         connection = db.engine.connect()
-        connection.execute(text('SELECT 1'))
         connection.close()
     print("Successfully connected to the database.")
 except Exception as e:
