@@ -10,7 +10,6 @@ from sqlalchemy import text
 from backend.routes import main_bp
 from backend.models import db
 
-from backend.routes import set_routes
 from backend.constants import UPLOAD_FOLDER, CSV_FOLDER, DETECTION_FOLDER, SEGMENTATION_FOLDER, METADATA_FOLDER
 
 parser = argparse.ArgumentParser('Online Food Recognition')
@@ -49,7 +48,6 @@ app.config['CSV_FOLDER'] = CSV_FOLDER
 app.config['DETECTION_FOLDER'] = DETECTION_FOLDER
 app.config['SEGMENTATION_FOLDER'] = SEGMENTATION_FOLDER
 
-set_routes(app)
 
 # Регистрируем Blueprint
 app.register_blueprint(main_bp)
