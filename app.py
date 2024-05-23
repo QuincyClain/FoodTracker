@@ -25,6 +25,8 @@ app = Flask(__name__, template_folder='templates', static_folder='static')
 CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 
+app.secret_key = 'a58d88bb1fc7e996989fc78fad9e9098c7918fdb9e8cf7a5' #just random secret key to test app
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:Vladgoogle123@8.tcp.eu.ngrok.io:23380/Food_User_database'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
