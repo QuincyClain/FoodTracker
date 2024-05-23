@@ -4,7 +4,6 @@ import argparse
 from flask import Flask
 from flask_cors import CORS
 from flask_ngrok import run_with_ngrok
-from flask_sqlalchemy import SQLAlchemy  # Импорт SQLAlchemy
 from flask_migrate import Migrate
 from sqlalchemy import text
 from backend.routes import main_bp
