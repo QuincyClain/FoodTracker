@@ -27,6 +27,15 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)  # Инициализация базы данных
 
+# Проверка подключения к базе данных
+try:
+    with app.app_context():
+        db.engine.execute('SELECT 1')
+    print("Successfully connected to the database.")
+except Exception as e:
+    print("Failed to connect to the database.")
+    print(e)
+
 # Определение модели пользователя
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -73,6 +82,14 @@ if __name__ == '__main__':
         # Создание всех таблиц в базе данных
         with app.app_context():
             db.create_all()
+            # Добавление тестового пользователя
+            user = User(username='testuser', email='testuser@example.com')
+            db.session.add(user)
+            db.session.commit()
+
+            # Чтение данных из таблицы
+            user = User.query.first()
+            print(user)  # Должно вывести <User testuser>
 
         app.run(host=host, port=port, debug=args.debug, use_reloader=False,
                 ssl_context='adhoc')
