@@ -5,6 +5,7 @@ from flask import Flask
 from flask_cors import CORS
 from flask_ngrok import run_with_ngrok
 from flask_sqlalchemy import SQLAlchemy  # Импорт SQLAlchemy
+from sqlalchemy import text
 
 from backend.routes import set_routes
 from backend.constants import UPLOAD_FOLDER, CSV_FOLDER, DETECTION_FOLDER, SEGMENTATION_FOLDER, METADATA_FOLDER
