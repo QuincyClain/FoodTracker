@@ -83,7 +83,13 @@ if __name__ == '__main__':
 
         # Создание всех таблиц в базе данных
         with app.app_context():
-            db.create_all()
+            with app.app_context():
+                try:
+                    db.create_all()  # Создание таблицы
+                    print("Tables created successfully.")
+                except Exception as e:
+                    print("Failed to create tables.")
+                    print(e)
             # Добавление тестового пользователя
             user = User(username='testuser', email='testuser@example.com')
             db.session.add(user)
