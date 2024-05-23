@@ -1,5 +1,6 @@
 from flask_cors import cross_origin
-from flask import Blueprint, request, render_template, redirect, make_response, url_for, flash
+from flask import Blueprint, request, render_template, redirect, make_response, url_for, flash, session
+from werkzeug.security import generate_password_hash, check_password_hash
 
 from .utils import process_webcam_capture, process_url_input, process_image_file, process_output_file, process_upload_file
 from .models import User, db
@@ -61,6 +62,7 @@ def analyze():
 
     return redirect('/')
 
+# Регистрация
 @main_bp.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -77,14 +79,45 @@ def register():
         if user_exists:
             flash('A user with that email already exists')
             return redirect(url_for('main.register'))
-            
-        new_user = User(username=username, email=email, password=password)
+        
+        hashed_password = generate_password_hash(password, method='sha256')
+        new_user = User(username=username, email=email, password=hashed_password)
         db.session.add(new_user)
         db.session.commit()
         flash('Registration successful')
-        return redirect(url_for('main.login'))  # Assuming you have a login route
+        session['user_id'] = new_user.id  # Сохраняем user_id в сессию
+        return redirect(url_for('main.analyze'))
     
     return render_template('register.html')
+
+@main_bp.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        
+        if not email or not password:
+            flash('Please fill out all fields')
+            return redirect(url_for('main.login'))
+        
+        user = User.query.filter_by(email=email).first()
+        if user and check_password_hash(user.password, password):
+            session['user_id'] = user.id
+            flash('Login successful')
+            return redirect(url_for('main.analyze'))
+        else:
+            flash('Invalid credentials')
+            return redirect(url_for('main.login'))
+    
+    return render_template('login.html')
+
+
+@main_bp.route('/logout')
+def logout():
+    session.pop('user_id', None)
+    flash('You have been logged out')
+    return redirect(url_for('main.analyze'))
+
 
 @main_bp.after_request
 def add_header(response):

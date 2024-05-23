@@ -19,10 +19,32 @@
         <a href="/" class="w3-bar-item w3-button" style="font-size:18px;text-decoration:none;font-family:Verdana, sans-serif;"><b>Food</b> Detector</a>  
         <a href="/url" class="w3-bar-item w3-button" style="font-size:18px;float:right;text-decoration:none;font-family:Verdana, sans-serif;">Detect by url</a>       
         <a href="/webcam" class="w3-bar-item w3-button" style="font-size:18px;float:right;text-decoration:none;font-family:Verdana, sans-serif;">Detect by webcam</a>
-        <a href="{{ url_for('main.register') }}" class="w3-bar-item w3-button" style="font-size:18px;float:right;text-decoration:none;">Register</a>       
+        {% if 'user_id' in session %}
+        <a href="javascript:void(0)" onclick="showLogoutModal()" class="w3-bar-item w3-button" style="font-size:18px;float:right;text-decoration:none;">Logout</a>
+        {% else %}
+        <a href="{{ url_for('main.login') }}" class="w3-bar-item w3-button" style="font-size:18px;float:right;text-decoration:none;">Login</a>
+        <a href="{{ url_for('main.register') }}" class="w3-bar-item w3-button" style="font-size:18px;float:right;text-decoration:none;">Register</a>
+        {% endif %}      
       </div>
     </div>
 
+    <!-- Модальное окно -->
+    <div id="logoutModal" class="w3-modal">
+      <div class="w3-modal-content w3-animate-top w3-card-4">
+        <header class="w3-container w3-teal"> 
+          <span onclick="document.getElementById('logoutModal').style.display='none'" 
+          class="w3-button w3-display-topright">&times;</span>
+          <h2>Подтверждение выхода</h2>
+        </header>
+        <div class="w3-container">
+          <p>Вы уверены, что хотите выйти из аккаунта?</p>
+        </div>
+        <footer class="w3-container w3-teal">
+          <button onclick="document.getElementById('logoutModal').style.display='none'" class="w3-button w3-red">Отмена</button>
+          <a href="{{ url_for('main.logout') }}" class="w3-button w3-green">Выйти</a>
+        </footer>
+      </div>
+    </div>
 
     <div class='center' style="position:relative;">
       <div class="panel panel-default result-panel">
@@ -126,5 +148,10 @@
     <script src="{{ url_for('static', filename='js/jquery-3.5.1.min.js') }}" defer></script>
     <script src="{{ url_for('static', filename='js/all.js') }}" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script>
+      function showLogoutModal() {
+        document.getElementById('logoutModal').style.display = 'block';
+      }
+      </script>
   </body>
 </html>
