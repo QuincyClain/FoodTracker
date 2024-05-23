@@ -56,6 +56,15 @@ app.config['SEGMENTATION_FOLDER'] = SEGMENTATION_FOLDER
 
 set_routes(app)
 
+# Создание всех таблиц в базе данных
+with app.app_context():
+    try:
+        db.create_all()  # Создание таблицы
+        print("Tables created successfully.")
+    except Exception as e:
+        print("Failed to create tables.")
+        print(e)
+
 if __name__ == '__main__':
     if not os.path.exists(UPLOAD_FOLDER):
         os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -80,24 +89,5 @@ if __name__ == '__main__':
         else:
             port = hostname[1]
         host = hostname[0]
-
-        # Создание всех таблиц в базе данных
-        with app.app_context():
-            with app.app_context():
-                try:
-                    db.create_all()  # Создание таблицы
-                    print("Tables created successfully.")
-                except Exception as e:
-                    print("Failed to create tables.")
-                    print(e)
-            # Добавление тестового пользователя
-            user = User(username='testuser', email='testuser@example.com')
-            db.session.add(user)
-            db.session.commit()
-
-            # Чтение данных из таблицы
-            user = User.query.first()
-            print(user)  # Должно вывести <User testuser>
-
         app.run(host=host, port=port, debug=args.debug, use_reloader=False,
                 ssl_context='adhoc')
