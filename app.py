@@ -4,6 +4,7 @@ import argparse
 from flask import Flask
 from flask_cors import CORS
 from flask_ngrok import run_with_ngrok
+from flask_sqlalchemy import SQLAlchemy  # Импорт SQLAlchemy
 
 from backend.routes import set_routes
 from backend.constants import UPLOAD_FOLDER, CSV_FOLDER, DETECTION_FOLDER, SEGMENTATION_FOLDER, METADATA_FOLDER
@@ -19,6 +20,22 @@ parser.add_argument('--debug', action='store_true',
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
 CORS(app, resources={r"/api/*": {"origins": "*"}})
+
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:Vladgoogle123@8.tcp.eu.ngrok.io:23380/Food_User_database'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)  # Инициализация базы данных
+
+# Определение модели пользователя
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+
+    def __repr__(self):
+        return f'<User {self.username}>'
+
 
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 1
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -52,6 +69,10 @@ if __name__ == '__main__':
         else:
             port = hostname[1]
         host = hostname[0]
+
+        # Создание всех таблиц в базе данных
+        with app.app_context():
+            db.create_all()
 
         app.run(host=host, port=port, debug=args.debug, use_reloader=False,
                 ssl_context='adhoc')
