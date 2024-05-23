@@ -5,7 +5,10 @@ from flask import Flask
 from flask_cors import CORS
 from flask_ngrok import run_with_ngrok
 from flask_sqlalchemy import SQLAlchemy  # Импорт SQLAlchemy
+from flask_migrate import Migrate
 from sqlalchemy import text
+from backend.routes import main_bp
+from backend.models import db
 
 from backend.routes import set_routes
 from backend.constants import UPLOAD_FOLDER, CSV_FOLDER, DETECTION_FOLDER, SEGMENTATION_FOLDER, METADATA_FOLDER
@@ -26,7 +29,8 @@ CORS(app, resources={r"/api/*": {"origins": "*"}})
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:Vladgoogle123@8.tcp.eu.ngrok.io:23380/Food_User_database'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-db = SQLAlchemy(app)  # Инициализация базы данных
+db.init_app(app)
+migrate = Migrate(app, db)
 
 try:
     with app.app_context():
@@ -38,15 +42,6 @@ except Exception as e:
     print("Failed to connect to the database.")
     print(e)
 
-# Определение модели пользователя
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-
-    def __repr__(self):
-        return f'<User {self.username}>'
-
 
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 1
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -56,10 +51,13 @@ app.config['SEGMENTATION_FOLDER'] = SEGMENTATION_FOLDER
 
 set_routes(app)
 
+# Регистрируем Blueprint
+app.register_blueprint(main_bp)
+
 # Создание всех таблиц в базе данных
 with app.app_context():
     try:
-        db.create_all()  # Создание таблицы
+        db.create_all()
         print("Tables created successfully.")
     except Exception as e:
         print("Failed to create tables.")

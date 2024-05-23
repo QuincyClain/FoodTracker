@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+<body>
+    <div class="w3-container w3-padding-32">
+        <h2>Register</h2>
+        <form method="post" action="{{ url_for('register') }}">
+            <div class="w3-section">
+                <label>Username</label>
+                <input class="w3-input w3-border" type="text" name="username" required>
+            </div>
+            <div class="w3-section">
+                <label>Email</label>
+                <input class="w3-input w3-border" type="email" name="email" required>
+            </div>
+            <div class="w3-section">
+                <label>Password</label>
+                <input class="w3-input w3-border" type="password" name="password" required>
+            </div>
+            <button class="w3-button w3-black" type="submit">Register</button>
+        </form>
+    </div>
+</body>
+</html>
