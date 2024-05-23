@@ -21,4 +21,3 @@ rsa>=4.7 # not directly required, pinned by Snyk to avoid a vulnerability
 flask_sqlalchemy
 mysql-connector-python
 Flask-Migrate
-Werkzeug==2.1.1

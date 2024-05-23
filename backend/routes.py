@@ -1,6 +1,5 @@
 from flask_cors import cross_origin
 from flask import Blueprint, request, render_template, redirect, make_response, url_for, flash, session
-from werkzeug.security import generate_password_hash, check_password_hash
 
 from .utils import process_webcam_capture, process_url_input, process_image_file, process_output_file, process_upload_file
 from .models import User, db
@@ -80,8 +79,8 @@ def register():
             flash('A user with that email already exists')
             return redirect(url_for('main.register'))
         
-        hashed_password = generate_password_hash(password, method='sha256')
-        new_user = User(username=username, email=email, password=hashed_password)
+        # Store the password directly (not recommended for production use)
+        new_user = User(username=username, email=email, password=password)
         db.session.add(new_user)
         db.session.commit()
         flash('Registration successful')
@@ -101,7 +100,7 @@ def login():
             return redirect(url_for('main.login'))
         
         user = User.query.filter_by(email=email).first()
-        if user and check_password_hash(user.password, password):
+        if user and user.password == password:
             session['user_id'] = user.id
             flash('Login successful')
             return redirect(url_for('main.analyze'))
