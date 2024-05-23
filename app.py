@@ -27,10 +27,11 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)  # Инициализация базы данных
 
-# Проверка подключения к базе данных
 try:
     with app.app_context():
-        db.engine.execute('SELECT 1')
+        connection = db.engine.connect()
+        connection.execute('SELECT 1')
+        connection.close()
     print("Successfully connected to the database.")
 except Exception as e:
     print("Failed to connect to the database.")
